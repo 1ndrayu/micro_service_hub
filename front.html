@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Community Micro-Service Hub</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Community Micro-Service Hub</h1>
+
+    {% if section == "home" %}
+        <h2>Available Services</h2>
+        <table border="1">
+            <tr>
+                <th>Service ID</th>
+                <th>Name</th>
+                <th>Provider</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+            {% for service in services %}
+            <tr>
+                <td>{{ service.Service_ID }}</td>
+                <td>{{ service.Service_Name }}</td>
+                <td>{{ service.Provider }}</td>
+                <td>{{ service.Category }}</td>
+                <td>{{ service.Price }}</td>
+                <td>{{ service.Description }}</td>
+                <td><a href="{{ url_for('book_service', service_id=service.Service_ID) }}">Book</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <p><a href="{{ url_for('stats') }}">View Platform Stats</a></p>
+
+    {% elif section == "book" %}
+        <h2>Book {{ service.Service_Name }}</h2>
+        <p>Provider: {{ service.Provider }}</p>
+        <p>Price: {{ service.Price }}</p>
+        <form method="POST">
+            <label>Booking ID: <input type="text" name="booking_id" required></label><br>
+            <label>Client Name: <input type="text" name="client" required></label><br>
+            <label>Booking Date: <input type="date" name="booking_date" required></label><br>
+            <label>Completion Date: <input type="date" name="completion_date" required></label><br>
+            <button type="submit">Book</button>
+        </form>
+        <p><a href="{{ url_for('home') }}">Back to Home</a></p>
+
+    {% elif section == "feedback" %}
+        <h2>Submit Feedback for Booking {{ booking_id }}</h2>
+        <form method="POST">
+            <label>Feedback ID: <input type="text" name="feedback_id" required></label><br>
+            <label>Client Name: <input type="text" name="client" required></label><br>
+            <label>Rating (1-5): <input type="number" name="rating" min="1" max="5" required></label><br>
+            <label>Comment: <textarea name="comment"></textarea></label><br>
+            <button type="submit">Submit</button>
+        </form>
+        <p><a href="{{ url_for('home') }}">Back to Home</a></p>
+
+    {% elif section == "stats" %}
+        <h2>Platform Stats</h2>
+        <p>Total Services: {{ stats.total_services }}</p>
+        <p>Available Services: {{ stats.available_services }}</p>
+        <p>Completed Bookings: {{ stats.completed_bookings }}</p>
+        <p>Average Rating: {{ '%0.2f' % stats.average_rating if stats.average_rating else 'N/A' }}</p>
+        <p><a href="{{ url_for('home') }}">Back to Home</a></p>
+    {% endif %}
+</body>
+</html>
